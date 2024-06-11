@@ -27,3 +27,9 @@ AddSVFile("server/sv_hooks.lua")
 
 AddCLFile("client/cl_functions.lua")
 AddCLFile("client/cl_networking.lua")
+
+hook.Add("DarkRPFinishedLoading", "prpname_autoloader", function()
+    DarkRP.removeChatCommand("rpname")
+    DarkRP.removeChatCommand("name")
+    DarkRP.removeChatCommand("nick")
+end)
