@@ -58,20 +58,26 @@ end
 function PLAYER:SetPRPName(name)
     if not IsValid(self) or not self:IsPlayer() then return end
 
-    if Prisel.RPName:IsNameCached(name) then return false end
+    if Prisel.RPName:IsNameCached(name) then return end
 
-    if Prisel.RPName:IsNameCached(self:Name()) then
-        nameCaching[self:Name()] = nil
-    end
+    DarkRP.retrieveRPNames(name, function(taken)
+        if taken then
+            return
+        end
 
-    Prisel.RPName:AddNameCaching(name)
-    Prisel.RPName:AddPlayerCaching(self)
-
-    sql.Query("INSERT OR REPLACE INTO prisel_rpnames (steamid, name) VALUES ('" .. self:SteamID() .. "', '" .. name .. "')")
-
-    self:setRPName(name)
-
-    return true 
+        if Prisel.RPName:IsNameCached(self:Name()) then
+            nameCaching[self:Name()] = nil
+        end
+    
+        Prisel.RPName:AddNameCaching(name)
+        Prisel.RPName:AddPlayerCaching(self)
+    
+        sql.Query("INSERT OR REPLACE INTO prisel_rpnames (steamid, name) VALUES ('" .. self:SteamID() .. "', '" .. name .. "')")
+    
+        self:setRPName(name)
+    
+        return true 
+    end)
 end
 
 function PLAYER:HasPRPName()
